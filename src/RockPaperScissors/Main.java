@@ -1,5 +1,6 @@
 package RockPaperScissors;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -55,13 +56,13 @@ public class Main {
             if (difficultyChoice.equalsIgnoreCase("hard")) {
                 System.out.println(border);
                 PrintPaddedMessage(border, "You've chosen Hard");
-                PrintPaddedMessage(border,"Your opponent's choices will not be random!");
+                PrintPaddedMessage(border, "Your opponent's choices will not be random!");
                 System.out.println(border);
                 return true;  // Return true for Hard
             } else if (difficultyChoice.equalsIgnoreCase("normal")) {
                 System.out.println(border);
                 PrintPaddedMessage(border, "You've chosen Normal");
-                PrintPaddedMessage(border,"Your opponent's choices will be random!");
+                PrintPaddedMessage(border, "Your opponent's choices will be random!");
                 System.out.println(border);
                 return false;  // Return false for Normal
             } else {
@@ -70,24 +71,80 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    private static String getBotChoice(int choice) {
+        return switch (choice) {
+            case 1 -> "Rock";
+            case 2 -> "Paper";
+            case 3 -> "Scissors";
+            default -> "Unknown";
+        };
+    }
+
+    private static int TurnResult(int player, int bot) {
+
+        if (player == bot) {
+            System.out.println("It's a tie!");
+            return 0;
+        } else if ((player == 1 && bot == 3) ||
+                (player == 2 && bot == 1) ||
+                (player == 3 && bot == 2)) {
+            System.out.println("Player wins!");
+            return 1;
+        } else {
+            System.out.println("Mr. RPS wins!");
+            return 2;
+        }
+    }
+
+    private static void DialogueRPS(String state) {
+        //TODO
+    }
+
+    private static void NormalBot() {
         Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        int playerPoints = 0;
+        int botPoints = 0;
+
+        System.out.println();
+        System.out.println("-Mr. RPS: Hello, I will be your opponent today :)");
+        System.out.println("-Mr. RPS: Go ahead and make your move :D");
+        System.out.println();
+
+        while (playerPoints < 6 || botPoints < 6) {
+            int playerMove = PlayerSelection(scanner.nextLine());
+            int botMove = random.nextInt(3) + 1;
+
+            System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
+
+            int moveResult = TurnResult(playerMove, botMove);
+
+            switch (moveResult) {
+                case 1:
+                    playerPoints++;
+                    DialogueRPS("loss");
+                    break;
+                case 2:
+                    botPoints++;
+                    DialogueRPS("victory");
+                    break;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
 
         String border = "_________________________________________________________________________________________________________________________";
 
         boolean difficulty = DifficultyRequest(border); //Hard = True | Normal = False
 
-        PrintPaddedMessage(border,"When you are ready to make your choice simply type it in, or type in the number");
-        PrintPaddedMessage(border,"|Rock - 1 | Paper - 2 | Scissors - 3|");
+        PrintPaddedMessage(border, "When you are ready to make your choice simply type it in, or type in the number");
+        PrintPaddedMessage(border, "|Rock - 1 | Paper - 2 | Scissors - 3|");
         System.out.println(border);
 
-        int keyNum = PlayerSelection(scanner.nextLine());
-        if(!difficulty){
-            System.out.println();
-            System.out.println("-Mr. RPS: Hello, I will be your opponent today :)");
-            System.out.println("-Mr. RPS: I will be making my move now, let's have a good game! :D");
-            System.out.println();
+        if (!difficulty) {
+            NormalBot();
         }
-
     }
 }
