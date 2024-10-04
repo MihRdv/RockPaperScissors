@@ -4,9 +4,10 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static Scanner scanner = new Scanner(System.in);
+
     public static int PlayerSelection() {
         int keyNumber = 0;
-        Scanner scanner = new Scanner(System.in);
 
         boolean loop = true;
         while (loop) {
@@ -36,7 +37,7 @@ public class Main {
         return keyNumber;
     }
 
-    private static void PrintPaddedMessage(String border, String message) {
+    public static void PrintPaddedMessage(String border, String message) {
         int totalPadding = border.length() - message.length() - 2; // -2 for the side borders "|"
         int leftPadding = totalPadding / 2;
         int rightPadding = totalPadding - leftPadding; // Ensures symmetry for odd lengths
@@ -45,7 +46,6 @@ public class Main {
     }
 
     private static boolean DifficultyRequest(String border) {
-        Scanner scanner = new Scanner(System.in);
 
         System.out.println(border);
         PrintPaddedMessage(border, "Please select your difficulty");

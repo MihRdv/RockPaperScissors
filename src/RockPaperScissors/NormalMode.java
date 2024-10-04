@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class NormalMode {
 
-    public String getBotChoice(int choice) {
+    private String getBotChoice(int choice) {
         return switch (choice) {
             case 1 -> "Rock";
             case 2 -> "Paper";
@@ -14,7 +14,7 @@ public class NormalMode {
         };
     }
 
-    public int TurnResult(int player, int bot) {
+    private int TurnResult(int player, int bot) {
 
         if (player == bot) {
             System.out.println("It's a tie!");
@@ -28,10 +28,6 @@ public class NormalMode {
             System.out.println("Mr. RPS wins!");
             return 2;
         }
-    }
-
-    public void DialogueRPS(String state) {
-        // TODO: Add dialogue interaction based on the game state.
     }
 
     public void NormalBot() {
@@ -53,17 +49,21 @@ public class NormalMode {
             System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
 
             int moveResult = TurnResult(playerMove, botMove);
+            DialoguePicker dialogue = new DialoguePicker();
 
             switch (moveResult) {
                 case 1:
                     playerPoints++;
-                    DialogueRPS("loss");
+                    dialogue.DialogueRPS("loss");
                     break;
                 case 2:
                     botPoints++;
-                    DialogueRPS("victory");
+                    dialogue.DialogueRPS("victory");
                     break;
             }
+        }
+        if(playerPoints == 6){
+            System.out.printf("Congratulations, you beat Mr. RPS!%nFinal score: You: %d | Mr. RPS: %d",playerPoints,botPoints);
         }
     }
 }
