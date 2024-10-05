@@ -31,8 +31,9 @@ public class NormalMode {
     }
 
     public void NormalBot() {
-        Scanner scanner = new Scanner(System.in);
+        new Scanner(System.in);
         Random random = new Random();
+        DialoguePicker dialogue = new DialoguePicker();
 
         int playerPoints = 0;
         int botPoints = 0;
@@ -42,14 +43,13 @@ public class NormalMode {
         System.out.println("-Mr. RPS: Go ahead and make your move :D");
         System.out.println();
 
-        while (playerPoints < 6 && botPoints < 6) {  // Loop until either player or bot gets 6 points
+        while (playerPoints < 3 && botPoints < 3) {  // Loop until either player or bot gets 6 points
             int playerMove = Main.PlayerSelection();
             int botMove = random.nextInt(3) + 1;
 
             System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
 
             int moveResult = TurnResult(playerMove, botMove);
-            DialoguePicker dialogue = new DialoguePicker();
 
             switch (moveResult) {
                 case 1:
@@ -62,8 +62,14 @@ public class NormalMode {
                     break;
             }
         }
-        if(playerPoints == 6){
+        if(playerPoints == 3){
             System.out.printf("Congratulations, you beat Mr. RPS!%nFinal score: You: %d | Mr. RPS: %d",playerPoints,botPoints);
+            System.out.println();
+            dialogue.DialogueRPS("endVictory");
+        } else if (botPoints == 3) {
+            System.out.printf("Mr. RPS has beaten you!%nFinal score: You: %d | Mr. RPS: %d",playerPoints,botPoints);
+            System.out.println();
+            dialogue.DialogueRPS("endVictory");
         }
     }
 }
