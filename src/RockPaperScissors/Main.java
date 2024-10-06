@@ -4,7 +4,10 @@ import java.util.Scanner;
 
 public class Main {
 
+    private static final String border = "_________________________________________________________________________________________________________________________";
     public static Scanner scanner = new Scanner(System.in);
+
+    private static boolean difficulty;
 
     public static int PlayerSelection() {
         int keyNumber = 0;
@@ -37,7 +40,7 @@ public class Main {
         return keyNumber;
     }
 
-    public static void PrintPaddedMessage(String border, String message) {
+    public static void PrintPaddedMessage(String message) {
         int totalPadding = border.length() - message.length() - 2; // -2 for the side borders "|"
         int leftPadding = totalPadding / 2;
         int rightPadding = totalPadding - leftPadding; // Ensures symmetry for odd lengths
@@ -45,11 +48,11 @@ public class Main {
         System.out.printf("|%" + leftPadding + "s%s%" + rightPadding + "s|%n", "", message, "");
     }
 
-    private static boolean DifficultyRequest(String border) {
+    private static void DifficultyRequest() {
 
         System.out.println(border);
-        PrintPaddedMessage(border, "Please select your difficulty");
-        PrintPaddedMessage(border, "Hard      OR      Normal");
+        PrintPaddedMessage("Please select your difficulty");
+        PrintPaddedMessage("Hard      OR      Normal");
         System.out.println(border);
 
         while (true) { // Loop to handle invalid inputs
@@ -57,16 +60,18 @@ public class Main {
 
             if (difficultyChoice.equalsIgnoreCase("hard")) {
                 System.out.println(border);
-                PrintPaddedMessage(border, "You've chosen Hard");
-                PrintPaddedMessage(border, "Your opponent's choices will not be random!");
+                PrintPaddedMessage("You've chosen Hard");
+                PrintPaddedMessage("Your opponent's choices will not be random!");
                 System.out.println(border);
-                return true;  // Return true for Hard
+                difficulty = true;  // Return true for Hard
+                break;
             } else if (difficultyChoice.equalsIgnoreCase("normal")) {
                 System.out.println(border);
-                PrintPaddedMessage(border, "You've chosen Normal");
-                PrintPaddedMessage(border, "Your opponent's choices will be random!");
+                PrintPaddedMessage("You've chosen Normal");
+                PrintPaddedMessage("Your opponent's choices will be random!");
                 System.out.println(border);
-                return false;  // Return false for Normal
+                difficulty = false;  // Return false for Normal
+                break;
             } else {
                 System.out.println("Invalid choice, please choose Hard or Normal");
             }
@@ -75,12 +80,11 @@ public class Main {
 
     public static void main(String[] args) {
         NormalMode normalMode = new NormalMode();
-        String border = "_________________________________________________________________________________________________________________________";
 
-        boolean difficulty = DifficultyRequest(border); // Hard = True | Normal = False
+        DifficultyRequest();
 
-        PrintPaddedMessage(border, "When you are ready to make your choice simply type it in, or type in the number");
-        PrintPaddedMessage(border, "|Rock - 1 | Paper - 2 | Scissors - 3|");
+        PrintPaddedMessage("When you are ready to make your choice simply type it in, or type in the number");
+        PrintPaddedMessage("|Rock - 1 | Paper - 2 | Scissors - 3|");
         System.out.println(border);
 
         if (!difficulty) {

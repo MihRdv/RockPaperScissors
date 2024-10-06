@@ -35,41 +35,65 @@ public class NormalMode {
         Random random = new Random();
         DialoguePicker dialogue = new DialoguePicker();
 
-        int playerPoints = 0;
-        int botPoints = 0;
+        int totalRounds = 0;
+        int playerRoundsWon = 0;
+        int botRoundsWon = 0;
 
         System.out.println();
         System.out.println("-Mr. RPS: Hello, I will be your opponent today :)");
         System.out.println("-Mr. RPS: Go ahead and make your move :D");
         System.out.println();
 
-        while (playerPoints < 3 && botPoints < 3) {  // Loop until either player or bot gets 6 points
-            int playerMove = Main.PlayerSelection();
-            int botMove = random.nextInt(3) + 1;
+        while (totalRounds < 3 && playerRoundsWon < 2 && botRoundsWon < 2) {  // Loop for rounds, end if a player wins 2 rounds
+            int playerPoints = 0;
+            int botPoints = 0;
 
-            System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
+            System.out.printf("Round %d begins!%n", totalRounds + 1);
+            totalRounds += 1;
 
-            int moveResult = TurnResult(playerMove, botMove);
+            while (playerPoints < 3 && botPoints < 3) {  // Loop for turns in a single round
+                int playerMove = Main.PlayerSelection();
+                int botMove = random.nextInt(3) + 1;
 
-            switch (moveResult) {
-                case 1:
-                    playerPoints++;
-                    dialogue.DialogueRPS("loss");
-                    break;
-                case 2:
-                    botPoints++;
-                    dialogue.DialogueRPS("victory");
-                    break;
+                System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
+
+                int moveResult = TurnResult(playerMove, botMove);
+
+                switch (moveResult) {
+                    case 1:
+                        playerPoints++;
+                        dialogue.DialogueRPS("loss");
+                        break;
+                    case 2:
+                        botPoints++;
+                        dialogue.DialogueRPS("victory");
+                        break;
+                }
             }
+
+            // After a round is complete
+            if (playerPoints == 3) {
+                playerRoundsWon++;
+                System.out.printf("Congratulations, you won the round!%nRound score: You: %d | Mr. RPS: %d%n", playerPoints, botPoints);
+                dialogue.DialogueRPS("roundVictory");
+            } else if (botPoints == 3) {
+                botRoundsWon++;
+                System.out.printf("Mr. RPS won the round!%nRound score: You: %d | Mr. RPS: %d%n", playerPoints, botPoints);
+                dialogue.DialogueRPS("roundVictory");
+            }
+
+            // Announce current standing
+            System.out.printf("%nCurrent standing: You: %d rounds | Mr. RPS: %d rounds%n", playerRoundsWon, botRoundsWon);
         }
-        if(playerPoints == 3){
-            System.out.printf("Congratulations, you beat Mr. RPS!%nFinal score: You: %d | Mr. RPS: %d",playerPoints,botPoints);
-            System.out.println();
-            dialogue.DialogueRPS("endVictory");
-        } else if (botPoints == 3) {
-            System.out.printf("Mr. RPS has beaten you!%nFinal score: You: %d | Mr. RPS: %d",playerPoints,botPoints);
-            System.out.println();
-            dialogue.DialogueRPS("endVictory");
+
+        // Final result after all rounds or if someone wins 2 rounds
+        if (playerRoundsWon > botRoundsWon) {
+            System.out.printf("Congratulations, you won the game! Final rounds: You: %d | Mr. RPS: %d%n", playerRoundsWon, botRoundsWon);
+            dialogue.DialogueRPS("gameLoss");
+        } else {
+            System.out.printf("Mr. RPS won the game! Final rounds: You: %d | Mr. RPS: %d%n", playerRoundsWon, botRoundsWon);
+            dialogue.DialogueRPS("gameVictory");
         }
     }
+
 }
