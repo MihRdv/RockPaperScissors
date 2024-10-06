@@ -4,10 +4,14 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final String border = "_________________________________________________________________________________________________________________________";
+    private static final String border =
+ "_________________________________________________________________________________________________________________________";
     public static Scanner scanner = new Scanner(System.in);
 
     private static boolean difficulty;
+    public static int rockUses = 0;
+    public static int paperUses = 0;
+    public static int scissorsUses = 0;
 
     public static int PlayerSelection() {
         int keyNumber = 0;
@@ -20,16 +24,19 @@ public class Main {
                 case "rock", "1":
                     keyNumber = 1;
                     System.out.println("You've selected Rock!");
+                    rockUses++;
                     loop = false;
                     break;
                 case "paper", "2":
                     keyNumber = 2;
                     System.out.println("You've selected Paper!");
+                    paperUses++;
                     loop = false;
                     break;
                 case "scissors", "3":
                     keyNumber = 3;
                     System.out.println("You've selected Scissors!");
+                    scissorsUses++;
                     loop = false;
                     break;
                 default:
@@ -61,14 +68,14 @@ public class Main {
             if (difficultyChoice.equalsIgnoreCase("hard")) {
                 System.out.println(border);
                 PrintPaddedMessage("You've chosen Hard");
-                PrintPaddedMessage("Your opponent's choices will not be random!");
+                PrintPaddedMessage("Game ends when you win 5 times or when your opponent wins 3 times! Good luck!");
                 System.out.println(border);
                 difficulty = true;  // Return true for Hard
                 break;
             } else if (difficultyChoice.equalsIgnoreCase("normal")) {
                 System.out.println(border);
                 PrintPaddedMessage("You've chosen Normal");
-                PrintPaddedMessage("Your opponent's choices will be random!");
+                PrintPaddedMessage("First to 2 wins!");
                 System.out.println(border);
                 difficulty = false;  // Return false for Normal
                 break;
@@ -80,6 +87,7 @@ public class Main {
 
     public static void main(String[] args) {
         NormalMode normalMode = new NormalMode();
+        HardMode hardMode = new HardMode();
 
         DifficultyRequest();
 
@@ -87,8 +95,10 @@ public class Main {
         PrintPaddedMessage("|Rock - 1 | Paper - 2 | Scissors - 3|");
         System.out.println(border);
 
-        if (!difficulty) {
-            normalMode.NormalBot();
+        if (difficulty) {
+            hardMode.HardBot(); // 3 Total rounds - First to 2 wins
+        } else {
+            normalMode.NormalBot(); // 9 Total rounds - First to 5 wins
         }
     }
 }

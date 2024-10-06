@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DialoguePicker {
+public class NormalDialoguePicker {
 
     private final Random random = new Random();
     //Different lines of dialogue for victory/loss respectively, the "weights" list representing the chance that

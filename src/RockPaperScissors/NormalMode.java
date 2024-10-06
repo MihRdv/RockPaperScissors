@@ -33,7 +33,7 @@ public class NormalMode {
     public void NormalBot() {
         new Scanner(System.in);
         Random random = new Random();
-        DialoguePicker dialogue = new DialoguePicker();
+        NormalDialoguePicker dialogue = new NormalDialoguePicker();
 
         int totalRounds = 0;
         int playerRoundsWon = 0;
@@ -69,6 +69,7 @@ public class NormalMode {
                         dialogue.DialogueRPS("victory");
                         break;
                 }
+                System.out.printf("Current points: You - %d | Mr. RPS - %d%n",playerPoints,botPoints);
             }
 
             // After a round is complete
