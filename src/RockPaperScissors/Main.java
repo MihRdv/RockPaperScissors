@@ -12,6 +12,7 @@ public class Main {
     public static int rockUses = 0;
     public static int paperUses = 0;
     public static int scissorsUses = 0;
+    public static int playerLastMove;
 
     public static int PlayerSelection() {
         int keyNumber = 0;
@@ -25,18 +26,21 @@ public class Main {
                     keyNumber = 1;
                     System.out.println("You've selected Rock!");
                     rockUses++;
+                    playerLastMove = 1;
                     loop = false;
                     break;
                 case "paper", "2":
                     keyNumber = 2;
                     System.out.println("You've selected Paper!");
                     paperUses++;
+                    playerLastMove = 2;
                     loop = false;
                     break;
                 case "scissors", "3":
                     keyNumber = 3;
                     System.out.println("You've selected Scissors!");
                     scissorsUses++;
+                    playerLastMove = 3;
                     loop = false;
                     break;
                 default:
