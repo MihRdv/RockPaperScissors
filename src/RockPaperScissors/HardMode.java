@@ -11,6 +11,8 @@ public class HardMode {
     public static int playerMove;
     public static int botMove;
     public static int botLastMove;
+    public static int result;
+    public static boolean changeRoundScore = false;
 
     private final BotAlgorithm Algorithm = new BotAlgorithm();
 
@@ -66,7 +68,8 @@ public class HardMode {
             System.out.printf("Round %d begins!%n", totalRounds + 1);
 
             // Loop for turns within the round, stops when someone scores 3 points
-            while (playerPoints < 3 && botPoints < 3) {
+            boolean roundLoop = playerPoints < 3 && botPoints < 3;
+            while (roundLoop) {
                 if(botPoints == 0 && playerPoints == 2 && totalRounds == 0){
                     System.out.println();
                     System.out.println("Mr. RPS: I won't go down that easy the first round.");
@@ -81,16 +84,18 @@ public class HardMode {
 
                     playerMove = Main.PlayerSelection();
 
-
+                //Algorithm selection
                 if(totalRounds == 0) {
                     botMove = Algorithm.Round1();
-                } else if(totalRounds > 0) {
+                } else if(playerRoundsWon >= 2) {
+                    botMove = Algorithm.LastRound();
+                } else {
                     botMove = Algorithm.MidRounds();
                 }
 
                 System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
 
-                int result = TurnResult(playerMove, botMove);
+                result = TurnResult(playerMove, botMove);
 
                 switch (result) {
                     case 1 : { // Player wins the turn
@@ -105,6 +110,11 @@ public class HardMode {
                     }
                 }
                 System.out.printf("Current points: You - %d | Mr. RPS - %d%n",playerPoints,botPoints);
+                if (changeRoundScore){
+                    roundLoop = playerPoints < 5 && botPoints < 5;
+                } else {
+                    roundLoop = playerPoints < 3 && botPoints < 3;
+                }
             }
 
             // Handle the round winner

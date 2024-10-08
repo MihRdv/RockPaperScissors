@@ -76,7 +76,7 @@ public class BotAlgorithm {
         return coinFlip ? firstCondition : secondCondition;
     }
 
-    /*ROUND 1
+    /*ROUND 1 - Algorithm only for the first round
      -MR. RPS will select one of the three key numbers and stick with that choice until an IF is triggered
      -IF the player score = 2 && MR RPS score = 0, MR RPS will make the score equal
      -IF player score = 2 && MR RPS score = 1, MR RPS will counter the player, again making the score equal
@@ -89,15 +89,7 @@ public class BotAlgorithm {
         if (HardMode.botPoints == 0 && HardMode.playerPoints == 2) {
             HardMode.botPoints += 2;
 
-            coinFlip = random.nextBoolean(); // true for most used, false for least used
-
-            if (coinFlip) {
-                // Pick counter of the most picked move by the player
-                return CounterMostUsedMove();
-            } else {
-                // Pick counter of the least picked move by the player
-                return CounterLeastUsedMove();
-            }
+            flipCoin(CounterMostUsedMove(), CounterLeastUsedMove());
         }
         // If 2 - 2
         if (HardMode.botPoints == 2 && HardMode.playerPoints == 2){
@@ -114,7 +106,7 @@ public class BotAlgorithm {
     }
 
 
-    /*MID ROUNDS
+    /*MID ROUNDS - Rounds between other rounds
     -MR RPS on his all other turns, will pick the counter of the LEAST/MOST played item by the player
 
     -IF MR RPS loses first turn (0-1), he will pick the counter of player's LAST move
@@ -154,4 +146,54 @@ public class BotAlgorithm {
     }
 
 
+    /*LAST ROUND - When the player reaches 2/3 rounds won
+    -MR RPS sets the round points to 5 for the remainder of the game, the last round Algorithm will be used
+    until either side wins
+
+    -On every move, MR RPS will decide if he will COUNTER player use REGULAR turn
+    INITIAL VALUE: 25% chance COUNTER | 75% chance REGULAR
+    IF MR RPS chooses REGULAR once: 50% chance COUNTER | 50% chance REGULAR
+    IF MR RPS chooses REGULAR twice: 70% chance COUNTER | 30% chance REGULAR
+    IF MR RPS chooses REGULAR thrice: 100% chance COUNTER
+    IF MR RPS chooses COUNTER: RESET TO INITIAL VALUE
+
+    LIST OF REGULAR MOVES:
+    -RESET POINTS:  The FIRST time the player leads MR RPS by 3 points in a round, MR RPS will RESET player points.
+     RESET CAN BE USED ONLY ONCE A ROUND
+    -IF MR RPS wins turn he will repeat move
+    -IF MR RPS loses turn he will pick the players LAST move
+    -For DEFAULT, MR RPS will COIN FLIP between countering LAST player move and MOST USED player move
+     */
+
+    public int LastRound(){
+        boolean hasReset = false;
+        // Reset points
+        if(!hasReset && HardMode.playerPoints >= HardMode.botPoints + 3){
+            HardMode.playerPoints = 0;
+            System.out.println("Mr. RPS: You think you have the lead? Think again.");
+            System.out.println("CONSOLE: ACCESS GRANTED... RESETTING PLAYER POINTS");
+            hasReset = true;
+        }
+
+        coinFlip = random.nextBoolean();
+        if(coinFlip){
+            return CounterPlayer();
+        } else {
+            return switch(HardMode.result){
+                case 0: {
+                    yield flipCoin(CounterLastPlayerMove(), CounterMostUsedMove());
+                }
+                case 1:{
+                    yield Main.playerLastMove;
+                }
+                case 2: {
+                    yield RepeatLastMove();
+                }
+                default: {
+                    yield -1;
+                }
+            };
+        }
+
+    }
 }
