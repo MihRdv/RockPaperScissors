@@ -7,7 +7,8 @@ public class BotAlgorithm {
     private final Random random = new Random();
 
     private final int randomNum =  random.nextInt(3) + 1;
-    private boolean coinFlip;
+    private boolean hasReset = false;
+    private int regularMoveCount = 0;
 
     private int CounterPlayer() {
         return switch (HardMode.playerMove) {
@@ -71,8 +72,25 @@ public class BotAlgorithm {
         };
     }
 
+    private int RegularMoves(){
+        return switch(HardMode.result){
+            case 0: {
+                yield flipCoin(CounterLastPlayerMove(), CounterMostUsedMove());
+            }
+            case 1:{
+                yield Main.playerLastMove;
+            }
+            case 2: {
+                yield RepeatLastMove();
+            }
+            default: {
+                yield -1;
+            }
+        };
+    }
+
     private int flipCoin(int firstCondition, int secondCondition) {
-        coinFlip = random.nextBoolean();
+        boolean coinFlip = random.nextBoolean();
         return coinFlip ? firstCondition : secondCondition;
     }
 
@@ -166,7 +184,7 @@ public class BotAlgorithm {
      */
 
     public int LastRound(){
-        boolean hasReset = false;
+        HardMode.changeRoundScore = true;
         // Reset points
         if(!hasReset && HardMode.playerPoints >= HardMode.botPoints + 3){
             HardMode.playerPoints = 0;
@@ -175,25 +193,32 @@ public class BotAlgorithm {
             hasReset = true;
         }
 
-        coinFlip = random.nextBoolean();
-        if(coinFlip){
+// Determine if MR. RPS should COUNTER or use a REGULAR turn
+        boolean shouldCounter = false;
+
+        // Calculate chance based on regularMoveCount
+        if (regularMoveCount == 0) {
+            shouldCounter = random.nextInt(100) < 25; // 25% chance
+        } else if (regularMoveCount == 1) {
+            shouldCounter = random.nextInt(100) < 50; // 50% chance
+        } else if (regularMoveCount == 2) {
+            shouldCounter = random.nextInt(100) < 70; // 70% chance
+        } else if (regularMoveCount >= 3) {
+            shouldCounter = true; // 100% chance
+        }
+
+        // Execute decision
+        if (shouldCounter) {
+            // If COUNTER is chosen, reset regularMoveCount
+            regularMoveCount = 0;
             return CounterPlayer();
         } else {
-            return switch(HardMode.result){
-                case 0: {
-                    yield flipCoin(CounterLastPlayerMove(), CounterMostUsedMove());
-                }
-                case 1:{
-                    yield Main.playerLastMove;
-                }
-                case 2: {
-                    yield RepeatLastMove();
-                }
-                default: {
-                    yield -1;
-                }
-            };
+            // If REGULAR is chosen, increment the regularMoveCount
+            regularMoveCount++;
+            return RegularMoves();
         }
+
+
 
     }
 }
