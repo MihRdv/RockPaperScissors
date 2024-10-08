@@ -89,6 +89,15 @@ public class BotAlgorithm {
         };
     }
 
+    private int LosingMove(){
+        return switch (HardMode.playerMove) {
+            case 1 -> 3; // If the player's last move was Rock, counter with Paper
+            case 2 -> 1; // If the player's last move was Paper, counter with Scissors
+            case 3 -> 2; // If the player's last move was Scissors, counter with Rock
+            default -> -1;
+        };
+    }
+
     private int flipCoin(int firstCondition, int secondCondition) {
         boolean coinFlip = random.nextBoolean();
         return coinFlip ? firstCondition : secondCondition;
@@ -182,7 +191,6 @@ public class BotAlgorithm {
     -IF MR RPS loses turn he will pick the players LAST move
     -For DEFAULT, MR RPS will COIN FLIP between countering LAST player move and MOST USED player move
      */
-
     public int LastRound(){
         HardMode.changeRoundScore = true;
         // Reset points
@@ -217,8 +225,22 @@ public class BotAlgorithm {
             regularMoveCount++;
             return RegularMoves();
         }
+    }
 
 
+    /*MOCKING ROUND
+    IF MR RPS leads by 3 - 0 he will purposefully lose a whole round
+    -Every move MR RPS makes will be losing for the whole round
+     */
+    public int MockRound(){
+        return LosingMove();
+    }
 
+
+    /*REVENGE ROUND
+    IF MRS loses by 0 - 2 he will counter every move you make for a round
+     */
+    public int RevengeRound(){
+        return CounterPlayer();
     }
 }

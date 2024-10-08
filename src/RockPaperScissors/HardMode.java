@@ -1,7 +1,5 @@
 package RockPaperScissors;
 
-import java.util.Random;
-
 public class HardMode {
 
     public static int playerPoints;
@@ -12,9 +10,24 @@ public class HardMode {
     public static int botMove;
     public static int botLastMove;
     public static int result;
+    public static int totalRounds;
     public static boolean changeRoundScore = false;
 
     private final BotAlgorithm Algorithm = new BotAlgorithm();
+
+    private void SelectAlgorithm(){
+        if (botRoundsWon == 0 && playerRoundsWon == 2) {
+            botMove = Algorithm.RevengeRound();
+        } else if (playerRoundsWon >= 2) {
+            botMove = Algorithm.LastRound();
+        } else if (botRoundsWon == 3 && playerRoundsWon == 0) {
+            botMove = Algorithm.MockRound();
+        } else if (totalRounds == 0) {
+            botMove = Algorithm.Round1();
+        } else {
+            botMove = Algorithm.MidRounds();
+        }
+    }
 
     public String getBotChoice(int botMove) {
         return switch (botMove) {
@@ -49,23 +62,25 @@ public class HardMode {
         }
     }
 
-    public void HardBot() {
-        Random random = new Random();
+    private void startRound() {
+        playerPoints = 0;
+        botPoints = 0;
+        totalRounds = playerRoundsWon + botRoundsWon;
+        System.out.printf("Round %d begins!%n", totalRounds + 1);
+    }
 
+    public void HardBot() {
         playerRoundsWon = 0;
         botRoundsWon = 0;
 
-        System.out.println("Bugged Mr. RPS: I will be your opponent today, get ready.");
-        System.out.println("Bugged Mr. RPS: Go ahead and make your move.");
+        System.out.println("Mr. RPS: I will be your opponent today, get ready.");
+        System.out.println("Mr. RPS: Go ahead and make your move.");
         System.out.println();
 
         // Loop for rounds, stops when the player wins 5 rounds or Mr. RPS wins 3 rounds
         while (playerRoundsWon < 5 && botRoundsWon < 3) {
-            playerPoints = 0;
-            botPoints = 0;
-            int totalRounds = playerRoundsWon + botRoundsWon;
 
-            System.out.printf("Round %d begins!%n", totalRounds + 1);
+            startRound();
 
             // Loop for turns within the round, stops when someone scores 3 points
             boolean roundLoop = playerPoints < 3 && botPoints < 3;
@@ -84,14 +99,8 @@ public class HardMode {
 
                     playerMove = Main.PlayerSelection();
 
-                //Algorithm selection
-                if(totalRounds == 0) {
-                    botMove = Algorithm.Round1();
-                } else if(playerRoundsWon >= 2) {
-                    botMove = Algorithm.LastRound();
-                } else {
-                    botMove = Algorithm.MidRounds();
-                }
+                //To choose the bot move
+                SelectAlgorithm();
 
                 System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
 
