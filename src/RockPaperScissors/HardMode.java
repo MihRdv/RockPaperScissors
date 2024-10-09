@@ -12,15 +12,28 @@ public class HardMode {
     public static int result;
     public static int totalRounds;
     public static boolean changeRoundScore = false;
+    private boolean lastRoundDialogue = true;
 
     private final BotAlgorithm Algorithm = new BotAlgorithm();
 
     private void SelectAlgorithm(){
+
         if (botRoundsWon == 0 && playerRoundsWon == 2) {
+            if(playerPoints == 0 && botPoints == 0){
+                System.out.println("Mr. RPS: ...");
+                System.out.println("CONSOLE: GRANTING MR RPS ACCESS TO PLAYER MOVES");
+            } // Revenge dialogue
             botMove = Algorithm.RevengeRound();
         } else if (playerRoundsWon >= 2) {
+            if(lastRoundDialogue){
+                System.out.println("Mr. RPS: You will NOT win.");
+                System.out.println("CONSOLE: $*(!#^#*())(^@#!");
+                lastRoundDialogue = false;
+            } // Last round dialogue
             botMove = Algorithm.LastRound();
         } else if (botRoundsWon == 3 && playerRoundsWon == 0) {
+            System.out.println("Mr. RPS: As expected, losing 3 - 0, and I thought humans were supposed to be better than AI");
+            System.out.println("Mr. RPS: If that is truly the case, you are no more than a mere bug, here, you may win this round.");
             botMove = Algorithm.MockRound();
         } else if (totalRounds == 0) {
             botMove = Algorithm.Round1();
