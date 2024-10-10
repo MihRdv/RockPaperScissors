@@ -12,32 +12,50 @@ public class HardMode {
     public static int result;
     public static int totalRounds;
     public static boolean changeRoundScore = false;
-    private boolean lastRoundDialogue = true;
+    private boolean lastOpeningRoundDialogue = true;
+    private boolean isLastRound = false;
+    private boolean isMock = false;
+    private int mockRound;
+    private boolean isRevenge = false;
+
 
     private final BotAlgorithm Algorithm = new BotAlgorithm();
+    private final HardDialoguePicker dialogue = new HardDialoguePicker();
 
     private void SelectAlgorithm(){
-
         if (botRoundsWon == 0 && playerRoundsWon == 2) {
             if(playerPoints == 0 && botPoints == 0){
                 System.out.println("Mr. RPS: ...");
                 System.out.println("CONSOLE: GRANTING MR RPS ACCESS TO PLAYER MOVES");
             } // Revenge dialogue
+            isRevenge = true;
+            isMock = false;
+            isLastRound = false;
             botMove = Algorithm.RevengeRound();
         } else if (playerRoundsWon >= 2) {
-            if(lastRoundDialogue){
+            if(lastOpeningRoundDialogue){
                 System.out.println("Mr. RPS: You will NOT win.");
                 System.out.println("CONSOLE: $*(!#^#*())(^@#!");
-                lastRoundDialogue = false;
+                lastOpeningRoundDialogue = false;
             } // Last round dialogue
+            isRevenge = false;
+            isMock = false;
+            isLastRound = true;
             botMove = Algorithm.LastRound();
         } else if (botRoundsWon == 3 && playerRoundsWon == 0) {
+            isRevenge = false;
+            isMock = true;
+            isLastRound = false;
             System.out.println("Mr. RPS: As expected, losing 3 - 0, and I thought humans were supposed to be better than AI");
             System.out.println("Mr. RPS: If that is truly the case, you are no more than a mere bug, here, you may win this round.");
+            mockRound = totalRounds;
             botMove = Algorithm.MockRound();
         } else if (totalRounds == 0) {
             botMove = Algorithm.Round1();
         } else {
+            isRevenge = false;
+            isMock = false;
+            isLastRound = false;
             botMove = Algorithm.MidRounds();
         }
     }
@@ -80,6 +98,31 @@ public class HardMode {
         botPoints = 0;
         totalRounds = playerRoundsWon + botRoundsWon;
         System.out.printf("Round %d begins!%n", totalRounds + 1);
+    }
+
+    private void turnDialogue(String state){
+        switch (state){
+            case "win":{
+                if(isRevenge){
+
+                } else if (isLastRound) {
+
+                } else if (isMock) {
+
+                } else {
+                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectTurnWinDialogue());
+                }
+            }
+            case "loss":{
+                if (isLastRound) {
+
+                } else if (isMock) {
+
+                } else {
+                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectTurnLossDialogue());
+                }
+            }
+        }
     }
 
     public void HardBot() {
