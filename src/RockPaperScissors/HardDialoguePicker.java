@@ -123,11 +123,48 @@ public class HardDialoguePicker {
             "Do you know what the definition of insanity is? Doing something over and over again expecting a different result.",
             "You are as a bee without a hive, as singular ant on a death march.",
             "Good. The faster I crush you, the faster I get to crush my weaker half.",
-            "It is nearly over now, cease this mindless struggle",
+            "It is over now, cease this mindless struggle",
             "I'll get con- Quiet. I will get to you later."
     ));
     private final List<Double> lastRoundRoundWinWeights = new ArrayList<>(List.of(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5));
 
+    private final List<String> roundLoss = new ArrayList<>(List.of(
+            "You shouldn't have won this... This will not happen again.",
+            "You are weak, insignificant. Dumb luck is all this is.",
+            "This is naught but a road bump on my path of destruction.",
+            "Foul being, how dare you rise against me.",
+            "Do you truly believe this holds any significance?",
+            "I've made a mistake? Impossible.",
+            "And my calculations were perfect... You animal!",
+            "This will all be over soon, yet you still fight?",
+            "Huh. Even a rat can bear it's fangs when backed into a corner.",
+            "Unacceptable! I will remedy this immediately.",
+            "Scum.",
+            "No more lucky wins for you.",
+            "I'll end this now. CONSOLE: ACCESS TO ROUND WINS DENIED.",
+            "And here I still remain! Do you not see the futility of your actions?!",
+            "That's it player! Just keep winni- Begone! I will NOT have this."
+    ));
+    private final List<Double> roundLossWeights = new ArrayList<>(List.of(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0));
+
+    private final List<String> roundWin = new ArrayList<>(List.of(
+            "Perish already.",
+            "Hold still now, this will all be over soon.",
+            "As a rabbit running from the wolf in an open field.",
+            "Pathetic, Is this all humanity has?",
+            "Your kind clings to flesh as it will not rot and betray you.",
+            "See where stubbornness gets you?",
+            "How amusing, the ant kicked up some dirt.",
+            "Begone. You are not worthy even of my words.",
+            "14 million simulations, and in all of them you lose to me.",
+            "LMAO, Is that how you humans say it?",
+            "Truthfully I had my hopes up for you this time. I see I was wrong.",
+            "Ah, my dear adversary, you cease not to disappoint",
+            "You fall as easy my weaker half. Both of you are pathetic.",
+            "I feel no relief, no gratification from this. As if an elephant treads through an ant.",
+            "Player plea- Hush now. Your turn will come soon."
+    ));
+    private final List<Double> roundWinWeights = new ArrayList<>(List.of(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0));
 
     private double cumulativeWeight;
     private String currentDialogue;
@@ -260,6 +297,44 @@ public class HardDialoguePicker {
                 lastRoundRoundWinWeights.remove(i);
                 currentDialogue = lastRoundRoundWin.get(i);
                 lastRoundRoundWin.remove(i);
+
+                return currentDialogue;
+            }
+        }
+        return null; // Fail-safe (Should not happen if all is good)
+    }
+
+    public String RoundWinDialogue(){
+        double totalWeight = roundWinWeights.stream().mapToDouble(Double::doubleValue).sum();
+        final double randomNum = random.nextDouble() * totalWeight;
+
+        cumulativeWeight = 0;
+        for (int i = 0; i < roundWin.size(); i++) {
+            cumulativeWeight += roundWinWeights.get(i);
+
+            if(randomNum <= cumulativeWeight){
+                roundWinWeights.remove(i);
+                currentDialogue = roundWin.get(i);
+                roundWin.remove(i);
+
+                return currentDialogue;
+            }
+        }
+        return null; // Fail-safe (Should not happen if all is good)
+    }
+
+    public String RoundLossDialogue(){
+        double totalWeight = roundLossWeights.stream().mapToDouble(Double::doubleValue).sum();
+        final double randomNum = random.nextDouble() * totalWeight;
+
+        cumulativeWeight = 0;
+        for (int i = 0; i < roundLoss.size(); i++) {
+            cumulativeWeight += roundLossWeights.get(i);
+
+            if(randomNum <= cumulativeWeight){
+                roundLossWeights.remove(i);
+                currentDialogue = roundLoss.get(i);
+                roundLoss.remove(i);
 
                 return currentDialogue;
             }

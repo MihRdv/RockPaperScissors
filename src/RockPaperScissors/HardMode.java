@@ -17,9 +17,7 @@ public class HardMode {
     private boolean lastRoundOpeningDialogue = true;
     private boolean isLastRound = false;
     private boolean isMock = false;
-    private int mockRound;
     private boolean isRevenge = false;
-    private int revengeRound;
 
 
     private final BotAlgorithm Algorithm = new BotAlgorithm();
@@ -35,7 +33,6 @@ public class HardMode {
             isMock = false;
             isLastRound = false;
             botMove = Algorithm.RevengeRound();
-            revengeRound = totalRounds;
         } else if (playerRoundsWon >= 2) {
             if (lastRoundOpeningDialogue) {
                 System.out.println("Mr. RPS: You will NOT win.");
@@ -46,13 +43,12 @@ public class HardMode {
             isMock = false;
             isLastRound = true;
             botMove = Algorithm.LastRound();
-        } else if (botRoundsWon == 3 && playerRoundsWon == 0) {
+        } else if (botRoundsWon == 2 && playerRoundsWon == 0) {
             isRevenge = false;
             isMock = true;
             isLastRound = false;
-            System.out.println("Mr. RPS: As expected, losing 3 - 0, and I thought humans were supposed to be better than AI");
+            System.out.println("Mr. RPS: As expected, losing 2 - 0, and I thought humans were supposed to be better than AI");
             System.out.println("Mr. RPS: If that is truly the case, you are no more than a mere bug, here, you may win this round.");
-            mockRound = totalRounds;
             botMove = Algorithm.MockRound();
         } else if (totalRounds == 0) {
             botMove = Algorithm.Round1();
@@ -131,29 +127,24 @@ public class HardMode {
     }
 
     private void roundDialogue(String state) {
-        if (totalRounds == revengeRound + 1) {
-            System.out.printf("%nMr. RPS: ... Better.%n");
-            System.out.println("CONSOLE: LOGGING MR RPS OUT OF CONSOLE");
-        } else if(totalRounds == mockRound + 1){
-            System.out.printf("%nMr. RPS: Enjoy this, rat.%n");
-        } else {
             switch (state) {
                 case "win":{
                     if(isLastRound){
                         System.out.printf("%nMr. RPS: %s%n",dialogue.LastRoundWinDialogue());
                     } else {
-
+                        System.out.printf("%nMr. RPS: %s%n",dialogue.RoundWinDialogue());
                     }
+                    break;
                 }
                 case "loss":{
                     if(isLastRound){
                         System.out.printf("%nMr. RPS: %s%n",dialogue.LastRoundLossDialogue());
                     } else {
-
+                        System.out.printf("%nMr. RPS: %s%n",dialogue.RoundLossDialogue());
                     }
+                    break;
                 }
             }
-        }
     }
 
     public void HardBot() {
@@ -165,28 +156,18 @@ public class HardMode {
         System.out.println();
 
         // Loop for rounds, stops when the player wins 5 rounds or Mr. RPS wins 3 rounds
+        // Loop for rounds, stops when the player wins 5 rounds or Mr. RPS wins 3 rounds
         while (playerRoundsWon < 5 && botRoundsWon < 3) {
-
             startRound();
 
-            // Loop for turns within the round, stops when someone scores 3 points
-            boolean roundLoop = playerPoints < 3 && botPoints < 3;
+            // Update the roundLoop condition based on the last round
+            boolean roundLoop = isLastRound ? playerPoints < 5 && botPoints < 5 : playerPoints < 3 && botPoints < 3;
             while (roundLoop) {
-                if (botPoints == 0 && playerPoints == 2 && totalRounds == 0) {
-                    System.out.println();
-                    System.out.println("Mr. RPS: I won't go down that easy the first round.");
-                    System.out.println("CONSOLE: GRANTING MR RPS 2 POINTS");
-                    System.out.println();
-                }
-                if (botPoints == 2 && playerPoints == 2 && totalRounds == 0) {
-                    System.out.println();
-                    System.out.println("Mr. RPS?: Now we're equal. What shall my next move be, I wonder?");
-                    System.out.println();
-                }
+                // Check for specific conditions here...
 
                 playerMove = Main.PlayerSelection();
 
-                //To choose the bot move
+                // To choose the bot move
                 SelectAlgorithm();
 
                 System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
@@ -206,35 +187,24 @@ public class HardMode {
                     }
                 }
                 System.out.printf("Current points: You - %d | Mr. RPS - %d%n", playerPoints, botPoints);
-                if (changeRoundScore) {
-                    roundLoop = playerPoints < 5 && botPoints < 5;
-                } else {
-                    roundLoop = playerPoints < 3 && botPoints < 3;
-                }
+
+                // Update the roundLoop condition based on whether it's the last round
+                roundLoop = isLastRound ? playerPoints < 5 && botPoints < 5 : playerPoints < 3 && botPoints < 3;
             }
 
             // Handle the round winner
             if (playerPoints == 3) {
                 playerRoundsWon++;
                 System.out.printf("Congratulations, you won the round!%nRound score: You: %d | Mr. RPS: %d%n", playerPoints, botPoints);
-                // TODO: Add dialogue for bot losing the round
+                roundDialogue("loss");
             } else if (botPoints == 3) {
                 botRoundsWon++;
                 System.out.printf("Mr. RPS won the round!%nRound score: You: %d | Mr. RPS: %d%n", playerPoints, botPoints);
-                // TODO: Add dialogue for bot winning the round
+                roundDialogue("win");
             }
 
             // Display current standing after each round
             System.out.printf("%nCurrent standing: You: %d rounds | Mr. RPS: %d rounds%n", playerRoundsWon, botRoundsWon);
-        }
-
-        // Final game result
-        if (playerRoundsWon >= 5) {
-            System.out.printf("Congratulations, you won the game! Final rounds: You: %d | Mr. RPS: %d%n", playerRoundsWon, botRoundsWon);
-            // TODO: Add dialogue for bot losing the game
-        } else {
-            System.out.printf("Mr. RPS won the game! Final rounds: You: %d | Mr. RPS: %d%n", playerRoundsWon, botRoundsWon);
-            // TODO: Add dialogue for bot winning the game
         }
     }
 }
