@@ -1,5 +1,7 @@
 package RockPaperScissors;
 
+import java.util.Random;
+
 public class HardMode {
 
     public static int playerPoints;
@@ -12,11 +14,12 @@ public class HardMode {
     public static int result;
     public static int totalRounds;
     public static boolean changeRoundScore = false;
-    private boolean lastOpeningRoundDialogue = true;
+    private boolean lastRoundOpeningDialogue = true;
     private boolean isLastRound = false;
     private boolean isMock = false;
     private int mockRound;
     private boolean isRevenge = false;
+    private int revengeRound;
 
 
     private final BotAlgorithm Algorithm = new BotAlgorithm();
@@ -32,11 +35,12 @@ public class HardMode {
             isMock = false;
             isLastRound = false;
             botMove = Algorithm.RevengeRound();
+            revengeRound = totalRounds;
         } else if (playerRoundsWon >= 2) {
-            if(lastOpeningRoundDialogue){
+            if(lastRoundOpeningDialogue){
                 System.out.println("Mr. RPS: You will NOT win.");
                 System.out.println("CONSOLE: $*(!#^#*())(^@#!");
-                lastOpeningRoundDialogue = false;
+                lastRoundOpeningDialogue = false;
             } // Last round dialogue
             isRevenge = false;
             isMock = false;
@@ -101,28 +105,31 @@ public class HardMode {
     }
 
     private void turnDialogue(String state){
+        Random random = new Random();
         switch (state){
             case "win":{
                 if(isRevenge){
-
+                    System.out.printf("%nMr.RPS: %s%n",HardDialoguePicker.revengeTurn.get(random.nextInt(3)+1));
                 } else if (isLastRound) {
-
-                } else if (isMock) {
-
+                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectLastRoundTurnWinDialogue());
                 } else {
                     System.out.printf("%nMr.RPS: %s%n",dialogue.SelectTurnWinDialogue());
                 }
             }
             case "loss":{
                 if (isLastRound) {
-
+                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectLastRoundTurnLossDialogue());
                 } else if (isMock) {
-
+                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectMockDialogue());
                 } else {
                     System.out.printf("%nMr.RPS: %s%n",dialogue.SelectTurnLossDialogue());
                 }
             }
         }
+    }
+
+    private void roundDialogue(String state){
+
     }
 
     public void HardBot() {
@@ -165,12 +172,12 @@ public class HardMode {
                 switch (result) {
                     case 1 : { // Player wins the turn
                         playerPoints++;
-                        // TODO: Add dialogue for bot losing the turn
+                        turnDialogue("loss");
                         break;
                     }
                     case 2 : {  // Bot wins the turn
                         botPoints++;
-                        // TODO: Add dialogue for bot winning the turn
+                        turnDialogue("win");
                         break;
                     }
                 }
