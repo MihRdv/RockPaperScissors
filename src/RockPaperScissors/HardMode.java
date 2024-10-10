@@ -33,7 +33,7 @@ public class HardMode {
             isMock = false;
             isLastRound = false;
             botMove = Algorithm.RevengeRound();
-        } else if (playerRoundsWon >= 2) {
+        } else if (playerRoundsWon >= 3) {
             if (lastRoundOpeningDialogue) {
                 System.out.println("Mr. RPS: You will NOT win.");
                 System.out.println("CONSOLE: $*(!#^#*())(^@#!");
