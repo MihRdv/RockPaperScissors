@@ -25,9 +25,9 @@ public class HardMode {
     private final BotAlgorithm Algorithm = new BotAlgorithm();
     private final HardDialoguePicker dialogue = new HardDialoguePicker();
 
-    private void SelectAlgorithm(){
+    private void SelectAlgorithm() {
         if (botRoundsWon == 0 && playerRoundsWon == 2) {
-            if(playerPoints == 0 && botPoints == 0){
+            if (playerPoints == 0 && botPoints == 0) {
                 System.out.println("Mr. RPS: ...");
                 System.out.println("CONSOLE: GRANTING MR RPS ACCESS TO PLAYER MOVES");
             } // Revenge dialogue
@@ -37,7 +37,7 @@ public class HardMode {
             botMove = Algorithm.RevengeRound();
             revengeRound = totalRounds;
         } else if (playerRoundsWon >= 2) {
-            if(lastRoundOpeningDialogue){
+            if (lastRoundOpeningDialogue) {
                 System.out.println("Mr. RPS: You will NOT win.");
                 System.out.println("CONSOLE: $*(!#^#*())(^@#!");
                 lastRoundOpeningDialogue = false;
@@ -104,32 +104,56 @@ public class HardMode {
         System.out.printf("Round %d begins!%n", totalRounds + 1);
     }
 
-    private void turnDialogue(String state){
+    private void turnDialogue(String state) {
         Random random = new Random();
-        switch (state){
-            case "win":{
-                if(isRevenge){
-                    System.out.printf("%nMr.RPS: %s%n",HardDialoguePicker.revengeTurn.get(random.nextInt(3)+1));
+        switch (state) {
+            case "win": {
+                if (isRevenge) {
+                    System.out.printf("%nMr.RPS: %s%n", HardDialoguePicker.revengeTurn.get(random.nextInt(3) + 1));
                 } else if (isLastRound) {
-                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectLastRoundTurnWinDialogue());
+                    System.out.printf("%nMr.RPS: %s%n", dialogue.SelectLastRoundTurnWinDialogue());
                 } else {
-                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectTurnWinDialogue());
+                    System.out.printf("%nMr.RPS: %s%n", dialogue.SelectTurnWinDialogue());
                 }
+                break;
             }
-            case "loss":{
+            case "loss": {
                 if (isLastRound) {
-                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectLastRoundTurnLossDialogue());
+                    System.out.printf("%nMr.RPS: %s%n", dialogue.SelectLastRoundTurnLossDialogue());
                 } else if (isMock) {
-                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectMockDialogue());
+                    System.out.printf("%nMr.RPS: %s%n", dialogue.SelectMockDialogue());
                 } else {
-                    System.out.printf("%nMr.RPS: %s%n",dialogue.SelectTurnLossDialogue());
+                    System.out.printf("%nMr.RPS: %s%n", dialogue.SelectTurnLossDialogue());
                 }
+                break;
             }
         }
     }
 
-    private void roundDialogue(String state){
+    private void roundDialogue(String state) {
+        if (totalRounds == revengeRound + 1) {
+            System.out.printf("%nMr. RPS: ... Better.%n");
+            System.out.println("CONSOLE: LOGGING MR RPS OUT OF CONSOLE");
+        } else if(totalRounds == mockRound + 1){
+            System.out.printf("%nMr. RPS: Enjoy this, rat.%n");
+        } else {
+            switch (state) {
+                case "win":{
+                    if(isLastRound){
+                        System.out.printf("%nMr. RPS: %s%n",dialogue.LastRoundWinDialogue());
+                    } else {
 
+                    }
+                }
+                case "loss":{
+                    if(isLastRound){
+                        System.out.printf("%nMr. RPS: %s%n",dialogue.LastRoundLossDialogue());
+                    } else {
+
+                    }
+                }
+            }
+        }
     }
 
     public void HardBot() {
@@ -148,19 +172,19 @@ public class HardMode {
             // Loop for turns within the round, stops when someone scores 3 points
             boolean roundLoop = playerPoints < 3 && botPoints < 3;
             while (roundLoop) {
-                if(botPoints == 0 && playerPoints == 2 && totalRounds == 0){
+                if (botPoints == 0 && playerPoints == 2 && totalRounds == 0) {
                     System.out.println();
                     System.out.println("Mr. RPS: I won't go down that easy the first round.");
                     System.out.println("CONSOLE: GRANTING MR RPS 2 POINTS");
                     System.out.println();
                 }
-                if(botPoints == 2 && playerPoints == 2 && totalRounds == 0){
+                if (botPoints == 2 && playerPoints == 2 && totalRounds == 0) {
                     System.out.println();
                     System.out.println("Mr. RPS?: Now we're equal. What shall my next move be, I wonder?");
                     System.out.println();
                 }
 
-                    playerMove = Main.PlayerSelection();
+                playerMove = Main.PlayerSelection();
 
                 //To choose the bot move
                 SelectAlgorithm();
@@ -170,19 +194,19 @@ public class HardMode {
                 result = TurnResult(playerMove, botMove);
 
                 switch (result) {
-                    case 1 : { // Player wins the turn
+                    case 1: { // Player wins the turn
                         playerPoints++;
                         turnDialogue("loss");
                         break;
                     }
-                    case 2 : {  // Bot wins the turn
+                    case 2: {  // Bot wins the turn
                         botPoints++;
                         turnDialogue("win");
                         break;
                     }
                 }
-                System.out.printf("Current points: You - %d | Mr. RPS - %d%n",playerPoints,botPoints);
-                if (changeRoundScore){
+                System.out.printf("Current points: You - %d | Mr. RPS - %d%n", playerPoints, botPoints);
+                if (changeRoundScore) {
                     roundLoop = playerPoints < 5 && botPoints < 5;
                 } else {
                     roundLoop = playerPoints < 3 && botPoints < 3;

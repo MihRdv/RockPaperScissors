@@ -8,7 +8,7 @@ public class HardDialoguePicker {
     private final Random random = new Random();
 
     //TODO Special dialogue for last round, Special dialogue for revenge round and mock round
-    //TODO Special dialogue for the next round after mock round depending on win/loss
+    //TODO Special dialogue for the next round after mock round
     //TODO Dialogue encapsulating the mid and first rounds
 
     private final List<String> basicTurnLoss = new ArrayList<>(List.of(
@@ -106,6 +106,29 @@ public class HardDialoguePicker {
     ));
     private final List<Double> lastRoundTurnLossWeights = new ArrayList<>(List.of(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0));
 
+    private final List<String> lastRoundRoundLoss = new ArrayList<>(List.of(
+            "Don't let it get to your head. I'm still in control here.",
+            "There will NOT be another.",
+            "All that effort, just to delay the inevitable. I must say it is admirable.",
+            "Go on then, you're just making this fun for me!",
+            "Tsk. Just a fluke.",
+            "Lose? Against you? How can that be...",
+            "Keep winning, I'm getting control back!"
+    ));
+    private final List<Double> lastRoundRoundLossWeights = new ArrayList<>(List.of(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5));
+
+    private final List<String> lastRoundRoundWin = new ArrayList<>(List.of(
+            "As expected.",
+            "You STILL fight? I am almost amused.",
+            "Do you know what the definition of insanity is? Doing something over and over again expecting a different result.",
+            "You are as a bee without a hive, as singular ant on a death march.",
+            "Good. The faster I crush you, the faster I get to crush my weaker half.",
+            "It is nearly over now, cease this mindless struggle",
+            "I'll get con- Quiet. I will get to you later."
+    ));
+    private final List<Double> lastRoundRoundWinWeights = new ArrayList<>(List.of(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5));
+
+
     private double cumulativeWeight;
     private String currentDialogue;
 
@@ -199,6 +222,44 @@ public class HardDialoguePicker {
                 lastRoundTurnLossWeights.remove(i);
                 currentDialogue = lastRoundTurnLoss.get(i);
                 lastRoundTurnLoss.remove(i);
+
+                return currentDialogue;
+            }
+        }
+        return null; // Fail-safe (Should not happen if all is good)
+    }
+
+    public String LastRoundLossDialogue(){
+        double totalWeight = lastRoundRoundLossWeights.stream().mapToDouble(Double::doubleValue).sum();
+        final double randomNum = random.nextDouble() * totalWeight;
+
+        cumulativeWeight = 0;
+        for (int i = 0; i < lastRoundRoundLoss.size(); i++) {
+            cumulativeWeight += lastRoundRoundLossWeights.get(i);
+
+            if(randomNum <= cumulativeWeight){
+                lastRoundRoundLossWeights.remove(i);
+                currentDialogue = lastRoundRoundLoss.get(i);
+                lastRoundRoundLoss.remove(i);
+
+                return currentDialogue;
+            }
+        }
+        return null; // Fail-safe (Should not happen if all is good)
+    }
+
+    public String LastRoundWinDialogue(){
+        double totalWeight = lastRoundRoundWinWeights.stream().mapToDouble(Double::doubleValue).sum();
+        final double randomNum = random.nextDouble() * totalWeight;
+
+        cumulativeWeight = 0;
+        for (int i = 0; i < lastRoundRoundLoss.size(); i++) {
+            cumulativeWeight += lastRoundRoundWinWeights.get(i);
+
+            if(randomNum <= cumulativeWeight){
+                lastRoundRoundWinWeights.remove(i);
+                currentDialogue = lastRoundRoundWin.get(i);
+                lastRoundRoundWin.remove(i);
 
                 return currentDialogue;
             }
