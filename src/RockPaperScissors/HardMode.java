@@ -163,12 +163,10 @@ public class HardMode {
             // Update the roundLoop condition based on the last round
             boolean roundLoop = isLastRound ? playerPoints < 5 && botPoints < 5 : playerPoints < 3 && botPoints < 3;
             while (roundLoop) {
-                // Check for specific conditions here...
-
-                playerMove = Main.PlayerSelection();
-
                 // To choose the bot move
                 SelectAlgorithm();
+
+                playerMove = Main.PlayerSelection();
 
                 System.out.println("Mr. RPS has picked " + getBotChoice(botMove) + "!");
 

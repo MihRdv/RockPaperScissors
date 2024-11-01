@@ -114,6 +114,8 @@ public class BotAlgorithm {
 
         // If the player leads 1-0
         if (HardMode.botPoints == 0 && HardMode.playerPoints == 1) {
+            System.out.println("Mr. RPS: Let's start off this first round right.");
+            System.out.println("CONSOLE: APPENDING MR RPS POINTS BY 2");
             HardMode.botPoints += 2;
 
             flipCoin(CounterMostUsedMove(), CounterLeastUsedMove());
