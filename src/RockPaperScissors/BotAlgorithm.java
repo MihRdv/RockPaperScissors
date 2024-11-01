@@ -112,8 +112,8 @@ public class BotAlgorithm {
     */
     public int Round1() {
 
-        // If the player leads 2-0
-        if (HardMode.botPoints == 0 && HardMode.playerPoints == 2) {
+        // If the player leads 1-0
+        if (HardMode.botPoints == 0 && HardMode.playerPoints == 1) {
             HardMode.botPoints += 2;
 
             flipCoin(CounterMostUsedMove(), CounterLeastUsedMove());
